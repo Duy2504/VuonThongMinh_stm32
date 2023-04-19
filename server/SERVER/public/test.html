@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        hello world
+    </h1>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("connection", () => {
+            console.log(socket.id);      
+        })
+    </script>
+
+
+    /////////////////
+
+    <div class="col-md-3" style="padding-top: 6%;padding-bottom: 6%;" id="div-btnb">
+        <div class="btn first text-white button">
+            <h2>Công tắc 2</h2>
+            <img id="myImage2" src="./imgs/img-3.png" style="width:120px" alt="">
+            <div class="bieudonnn">
+                <dr></dr>
+                <div class="container">
+                    <div class="toggle">
+                        <div class="toggle-button" id="togglechange" onclick="Animatedtoggle"()></div>
+                    </div>
+                    <div class="text">OFF</div>
+                </div>
+                <script>
+                    const toggle = document.getElementById("togglechange"); 
+                    const divchange = document.querySelector("#div-btnb"); 
+                    // let toggle = document.querySelector(".toggle");
+                    let text = document.querySelector(".text");
+                    // const divBtnB = document.querySelector("#div-btnb");
+                    const myImages2 = document.getElementById("myImage2");
+                    toggle.addEventListener('click',function(){
+                        toggle.classList.toggle("active");
+                        if (toggle.classList.contains("active")) {
+                            text.innerHTML = "ON";
+                            socket.emit("button2", "on");
+                            // alert("hellohello");
+                            divchange.style.backgroundColor = "#9B59B6";
+                            myImages2.src = "./imgs/img-3.png";
+                        }
+                        else {
+                            text.innerHTML = "OFF";
+                            socket.emit("button2", "off");
+                            // alert("hellohello2");
+                            myImages2.src = "./imgs/img-4.png";
+                            divchange.style.backgroundColor = "#78209b";
+                            socket.emit("button2", "off");
+                        }
+                    })
+                    // function Animatedtoggle() {
+                    //     toggle.classList.toggle("active");
+                        // if (toggle.classList.contains("active")) {
+                        //     text.innerHTML = "ON";
+                        //     socket.emit("button2", "on");
+                        //     // alert("hellohello");
+                        //     divBtnB.style.backgroundColor = "#9B59B6";
+                        //     myImages2.src = "./imgs/img-3.png";
+                        // }
+                        // else {
+                        //     text.innerHTML = "OFF";
+                        //     socket.emit("button2", "off");
+                        //     // alert("hellohello2");
+                        //     myImages2.src = "./imgs/img-4.png";
+                        //     socket.emit("button2", "off");
+                        // }
+                    // }
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DoAnHeThongNhung</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="mcb3.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
+    <!-- <script src="jquery-3.6.0.min.js"></script> -->
+
+    <!-- //////////////////////////////// -->
+
+    <script src="jquery.js"></script>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        ///// gọi điện lên server 
+        var socket = io("http://localhost:3000");
+
+        ///// để hệ thống chạy từ trên xuống dưới mới chạy đến script này 
+        $(document).ready(function () {
+            // alert("hello jquery");
+        });
+
+    </script>
+
+
+</head>
+
+<body>
+    <script type="module" src="./mcb3.js"></script>
+    <script type="module" src="./bieu-do.js"></script>
+    <div class="container-fluid">
+        <div class="row" id="topblock">
+            <div class="col-md-10">
+                <h1 class="name-msv">Đồ Án Hệ Thống Nhúng</h1>
+                <!-- <a href="https://www.facebook.com/profile.php?id=100014363918156" class="btn btn-info"
+                    role="button">Contact me!</a> -->
+                <!-- <div class="mb-3 bg-warning"></div> -->
+            </div>
+            <div class="col-md-2">
+                <a href="/history" target="_blank">
+                <!-- <a href="/history"> -->
+                    <button id="btnlichsudo">Lịch sử đo</button>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="A">
+                <div class="name text-white text-center " id="Name">
+                    <h1>Dữ liệu cảm biến</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3  text-white text-center" id="div-nd">
+                <h2>Nhiệt độ</h2>
+                <p>Dữ liệu nhiệt độ</p>
+                <h3 id="nhietdo"></h3>
+            </div>
+            <div class="col-md-3  text-white text-center" id="div-da">
+                <h2>Độ ẩm</h2>
+                <p>Dữ liệu độ ẩm</p>
+                <h3 id="doam"></h3>
+
+            </div>
+            <div class="col-md-3  text-white text-center" id="div-as">
+                <h2>Ánh sáng</h2>
+                <p>Dữ liệu ánh sáng</p>
+                <h3 id="anhsang"></h3>
+            </div>
+
+            <div class="col-md-3  text-white text-center" id="div-kb">
+                <h2>Khói bụi</h2>
+                <p>Dữ liệu khói bụi</p>
+                <h3 id="khoibui"></h3>
+            </div>
+        </div>
+        <div class="row text-white justify-content: text-center ">
+            <div class="col-md-6 bg-white" id="div-bieudo">
+                <div class="Bieu-do">
+                    <!-- <img src="imgs/cantho-average-monthly-rain.png" class="rounded" alt="Biểu đồ nhiệt độ"> -->
+                    <script src="https://code.highcharts.com/highcharts.js"></script>
+                    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+                    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+                    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+                    <figure class="highcharts-figure">
+                        <div id="container"></div>
+                    </figure>
+                </div>
+            </div>
+            <div class="col-md-3  " style="padding-top: 6%;padding-bottom: 6%;" id="div-btna">
+                <div class="btn first text-white button">
+                    <h2>Công tắc 1</h2>
+                    <img id="myImage" src="./imgs/img-1.png" style="width:120px" alt="">
+                    <div style="margin-left: -28%;margin-right: 0%;margin-top: 10px;">
+                        <button type="button " class="btnu " style="width:60% " id="button-on">ON</button>
+                        <button type="button" class="btny  active" style="width:60%" id="button-off">OFF</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3  " style="padding-top: 6%;padding-bottom: 6%;" id="div-btnb">
+                <div class="btn first text-white button">
+                    <h2>Công tắc 2</h2>
+                    <img id="myImage2" src="./imgs/img-3.png" style="width:120px" alt="">
+                    <div class="bieudonnn">
+                        <dr></dr>
+                        <div class="container">
+                            <div class="toggle">
+                                <div class="toggle-button" id="togglechange" onclick="Animatedtoggle() "></div>
+                            </div>
+                            <div class="text">OFF</div>
+                        </div>
+                        <script>
+                            let toggle = document.querySelector(".toggle");
+                            let text = document.querySelector(".text");
+                            const toggle2 = document.getElementById("togglechange");
+                            const divchange = document.querySelector("#div-btnb");
+                            const myImages2 = document.getElementById("myImage2");
+                            function Animatedtoggle() {
+                                toggle.classList.toggle("active");
+                                // if (toggle.classList.contains("active")) {
+                                //     text.innerHTML = "ON";
+                                //     socket.emit("button2", "on");
+                                //     // alert("hellohello");
+                                //     divBtnB.style.backgroundColor = "#9B59B6";
+                                //     myImages2.src = "./imgs/img-3.png";
+                                // }
+                                // else {
+                                //     text.innerHTML = "OFF";
+                                //     socket.emit("button2", "off");
+                                //     // alert("hellohello2");
+                                //     myImages2.src = "./imgs/img-4.png";
+                                //     socket.emit("button2", "off");
+                                // }
+                            }
+                            toggle2.addEventListener('click', function () {
+                                // toggle.classList.toggle("active");
+                                
+                                const a = confirm("Đảo trạng thái đèn ?");
+                                if (a == true) {
+                                    
+                                    if (toggle.classList.contains("active")) {
+                                    text.innerHTML = "ON";
+                                    socket.emit("button2", "on");
+                                    // alert("hellohello");
+                                    divchange.style.backgroundColor = "#9B59B6";
+                                    myImages2.src = "./imgs/img-3.png";
+                                }
+                                else {
+                                    text.innerHTML = "OFF";
+                                    socket.emit("button2", "off");
+                                    // alert("hellohello2");
+                                    myImages2.src = "./imgs/img-4.png";
+                                    divchange.style.backgroundColor = "#78209b";
+                                    socket.emit("button2", "off");
+                                }
+                                }
+                            })
+                        </script>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
