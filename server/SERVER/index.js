@@ -49,14 +49,10 @@ app.get('/history', function (req, res) {
 });
 
 const mqtt = require('mqtt');
-// var client = mqtt.connect('mqtt:/172.20.10.2');
-// var client = mqtt.connect('mqtt:/192.168.1.64');
 
-var client = mqtt.connect('mqtt:/192.168.43.105');
-
+var client = mqtt.connect('mqtt:/192.168.0.102');
 // var client = mqtt.connect('mqtt:/192.168.0.121');
 
-/////////////
 var express = require('express');
 var app = express();
 // var bodyParser = require('body-parser');
@@ -66,7 +62,7 @@ var dbConn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'wsn2' 
+    database: 'DoanHTN' 
 });
 dbConn.connect();
 
@@ -75,8 +71,6 @@ dbConn.query('SELECT * FROM `data_sensors2` ORDER BY created_at DESC LIMIT 1', f
     if (error) throw error;
     console.log({results});
 });
-//////////////
-
 client.on('connect', function () {
     client.subscribe('dataSensor');
     console.log('Client has subcribed successfully');

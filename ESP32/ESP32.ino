@@ -6,31 +6,12 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "MQ135.h"
-  ////////////////////////////////////////test 1//////////////
 #include <SPI.h>
-HardwareSerial SerialB(2); // A9: TX, A10: RX
-  ////////////////////////////////////////test 1//////////////
-
-
-// const char *ssid = "Anh co khen em dau";
-// const char *password = "99998899";
-// const char *mqtt_server = "192.168.1.65";
+HardwareSerial SerialB(2); 
 
 const char *ssid = "wifi";
 const char *password = "12345678";
 const char *mqtt_server = "192.168.43.105";
-
-// const char *ssid = "Hiển Anh";
-// const char *password = "11111111";
-// const char *mqtt_server = "172.20.10.2";
-
-// const char *ssid = "P 311";
-// const char *password = "88889988";
-// const char *mqtt_server = "192.168.1.64";
-
-// const char *ssid = "HELLO";
-// const char *password = "01092000";
-// const char *mqtt_server = "192.168.0.121";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -50,13 +31,9 @@ int sensorValue = 0;
 /////////
 // String ledStatus1 = "on";
 // String ledStatus2 = "on";
-/////////
 
-/////////
 DHT dht(DHTPIN, DHTTYPE);
-
 // char myStr[20];
-
 int ledStart1;
 int ledStart2;
 DynamicJsonDocument jsonDocES(128);
@@ -66,10 +43,8 @@ void setup_wifi()
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(100);
@@ -82,22 +57,18 @@ void setup_wifi()
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
-  
   Serial.print("Message arrived on topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
   String messageTemp;
-  
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   Serial.println();
-
-  // Feel free to add more if statements to control more GPIOs with MQTT
-
-  // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
-  // Changes the output state according to the message
+  /*Feel free to add more if statements to control more GPIOs with MQTT
+  If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
+  Changes the output state according to the message*/
   Serial.println(topic);
   Serial.println(messageTemp);
   if (String(topic) == "buttona") {
@@ -131,23 +102,19 @@ void callback(char* topic, byte* message, unsigned int length) {
     }
   }
 }
-////////////////////////
+
 void reconnect()
 {
-  // Loop until we're reconnected
   while (!client.connected())
   {
     Serial.print("Attempting MQTT connection...");
     // Create a random client ID
     String clientId = "ESP32uClient-";
     clientId += String(random(0xffff), HEX);
-    // Attempt to connect
     if (client.connect(clientId.c_str()))
     {
       Serial.println("connected");
-      // Once connected, publish an announcement...
       client.publish("dataSensor", "Connected");
-      // ... and resubscribe
       client.subscribe("buttona");
       client.subscribe("buttonb");
     }
@@ -164,9 +131,7 @@ void reconnect()
 
 void setup()
 {
-  ////////////////////////////////////////test 1//////////////
   SerialB.begin(9600);
-  ////////////////////////////////////////test 1//////////////
   Serial.begin(115200);
 
   setup_wifi();
@@ -174,10 +139,7 @@ void setup()
   client.setCallback(callback);
   dht.begin();
   Wire.begin();
-
   pinMode(sensorPin, INPUT);
-
-  //////////
   client.subscribe("buttona");
   client.subscribe("buttonb");
   pinMode(BUTTON1, OUTPUT); 
@@ -195,17 +157,14 @@ void loop()
     reconnect();
   }
   client.loop();
-
-  ////////////////////////////////////////test 1//////////////
   jsonDocES["led1"] = (int)ledStart1;
   jsonDocES["led2"] = (int)ledStart2;
   String jsonStringES;
   
   if (SerialB.available() > 0 )
   {
-    // Read from  STM module and send to serial monitor
     String input = SerialB.readString();
-    DynamicJsonDocument jsonDocER(128); // Kích thước buffer là 128 byte
+    DynamicJsonDocument jsonDocER(128);
     // Phân tích chuỗi JSON
     deserializeJson(jsonDocER, input);
     // Lấy giá trị nhiệt độ và độ ẩm
@@ -221,8 +180,6 @@ void loop()
     // Serial.print("lightIntensity: ");
     // Serial.println(lightSTM);
   }
-  ////////////////////////////////////////test 1//////////////
-
   unsigned long now = millis();
   if (now - lastMsg > 2000)
   {
@@ -241,24 +198,19 @@ void loop()
     Serial.print("Do am: ");
     Serial.print(humid);
     Serial.println("%");
-
     // int lightRaw = analogRead(light_sensor);
     // int light =100 - map(lightRaw, 0, 4095, 0, 100);
     int light = (int)lightSTM;
     Serial.print("Anh sang: ");
     Serial.print(light);
     Serial.println("%");
-
     // int dustppm = mq135_sensor.getPPM();
     // int dust = dustppm/10000;
     int dust = gasSTM;
-
     // int dust = mq135_sensor.getResistance();
-  
     Serial.print("Dust: ");
     Serial.print(dust);
     Serial.println("ppm");
-
     String ssData =String(temp) + "," + String(humid) + "," + String(light) + "," + String(dust);
     client.publish("dataSensor", ssData.c_str());
     Serial.print("Pushed Data: ");
