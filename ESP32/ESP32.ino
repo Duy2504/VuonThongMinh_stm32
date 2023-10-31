@@ -8,9 +8,9 @@
 
 HardwareSerial SerialA(0); // TX:GPIO1 RX:GPIO3
 HardwareSerial SerialB(2); // TX:GPIO17 RX:GPIO16
-const char *ssid = "1";
-const char *password = "duy1002452";
-const char *mqtt_server = "192.168.43.139";
+const char *ssid = "iPhone";
+const char *password = "1234567890";
+const char *mqtt_server = "172.20.10.8";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -81,6 +81,8 @@ void reconnect() {
       client.subscribe(sub2);
     } else {
       Serial.println(" try again in 2 seconds");
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
       delay(2000);
     }
   }
